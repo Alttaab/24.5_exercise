@@ -31,6 +31,8 @@ class User(db.Model):
     last_name = db.Column(db.String(30),
                    nullable=False,
                    unique=True)
+
+    feedback = db.relationship("Feedback", backref="user", cascade="all,delete")
     
     @classmethod
     def register(cls, username, password, first_name, last_name, email):
@@ -58,6 +60,32 @@ class User(db.Model):
         
         else:
             return False
+    
+    @classmethod
+    def authenticate(cls, username, password):
+        user = User.query.filter_by(username=username).first()
+        
+        if user and bcrypt.check_password_hash(user.password, password):
+            return user
+        
+        else:
+            return False
+
+
+class Feedback(db.Model):
+    """Feedback."""
+
+    __tablename__ = "feedback"
+
+    id = db.Column(db.Integer, primary_key=True)
+    title = db.Column(db.String(100), nullable=False)
+    content = db.Column(db.Text, nullable=False)
+    username = db.Column(
+        db.String(20),
+        db.ForeignKey('users.username'),
+        nullable=False,
+    )
+    
         
         
 

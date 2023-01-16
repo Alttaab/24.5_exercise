@@ -34,6 +34,16 @@ class UserLoginForm(FlaskForm):
                            validators=[InputRequired(), Length(min=1, max=50)])
         
 class DeleteForm(FlaskForm):
-    """
-        
-    """
+    ""
+
+
+class FeedbackForm(FlaskForm):
+
+    title = StringField(
+        "Title",
+        validators=[InputRequired(), Length(max=100)]
+    )
+    content = StringField(
+        "Content",
+        validators=[InputRequired()]
+    )
