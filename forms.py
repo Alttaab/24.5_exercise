@@ -24,5 +24,16 @@ class UserLoginForm(FlaskForm):
                            validators=[InputRequired(), Length(min=1, max=20)])
     password = PasswordField("Password",
                            validators=[InputRequired(), Length(min=1, max=50)])
+
+class UserLoginForm(FlaskForm):
+    """Form for logging in a user."""
     
-    
+    username = StringField("Username",
+                           validators=[InputRequired(), Length(min=1, max=20)])
+    password = PasswordField("Password",
+                           validators=[InputRequired(), Length(min=1, max=50)])
+        
+class DeleteForm(FlaskForm):
+    """
+        
+    """

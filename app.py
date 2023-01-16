@@ -1,8 +1,9 @@
 from flask import Flask, redirect, render_template, request, flash, session
 from flask_debugtoolbar import DebugToolbarExtension
+from werkzeug.exceptions import Unauthorized
 
 from models import db, connect_db, User
-from forms import UserRegisterForm, UserLoginForm
+from forms import UserRegisterForm, UserLoginForm, DeleteForm
 
 app = Flask(__name__)
 app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql:///user_feedback'
@@ -80,5 +81,25 @@ def logout():
 
 @app.route("/users/<username>")
 def show_user(username):
-    return username
-    #TODO: add secret path
+
+    if "username" not in session or username != session['username']:
+        raise Unauthorized()
+
+    user = User.query.get(username)
+    form = DeleteForm()
+
+    return render_template("users/user-page.html", user=user, form=form)
+
+
+@app.route("/users/<username>/delete", methods=["POST"])
+def delete_user(username):
+
+    if "username" not in session or username != session['username']:
+        raise Unauthorized()
+
+    user = User.query.get(username)
+    db.session.delete(user)
+    db.session.commit()
+    session.pop("username")
+
+    return redirect("/login")
